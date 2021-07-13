@@ -1,0 +1,463 @@
+Installing mongo-driver locally
+Reference Links:
+	-> https://medium.com/glottery/golang-and-mongodb-with-go-mongo-driver-part-1-1c43aba25a1
+		* Working Command to install mongo-driver
+			-> go get -v go.mongodb.org/mongo-driver/mongo@v1.0.3
+			-> But it installs in /go/pkg/mod folder
+	
+	-> https://www.mongodb.com/blog/post/quick-start-golang-mongodb-starting-and-setup
+	
+	How to connect to local mongodb:
+		-> https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial
+		
+	How to connect to atlas mongodb:
+		-> https://www.mongodb.com/blog/post/quick-start-golang-mongodb-starting-and-setup
+		
+	https://github.com/mongodb-developer/golang-quickstart/blob/master/connecting/connecting-to-your-mongodb-cluster-with-go.md
+	
+MongoDB tutorial:
+	-> https://vkt.sh/go-mongodb-driver-cookbook/
+	
+	****************************************************************************************************************************
+		
+mongodb URI to connect from goLang
+	-> mongodb+srv://m001-student:m001-mongodb-basics@sandbox.9t09v.mongodb.net/sample_training?retryWrites=true&w=majority
+		-> Replace <password> with the password for the m001-student user. Replace myFirstDatabase with the name of the database that connections will use by default. Ensure any option params are URL encoded.
+		
+	username: m001-student
+	password: m001-mongodb-basics
+
+Connection String:
+	mongo "mongodb+srv://sandbox.9t09v.mongodb.net/myFirstDatabase" --username m001-student
+	mongo "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.mongodb.net/admin"
+		
+	****************************************************************************************************************************
+	
+How to create a directory and get into the created directory?
+	-> mkdir mongo-golang-crud && cd $_
+	
+How to turn gomodule on,
+	-> export GO111MODULE=on
+	-> Turn this "off" to get your "go get" packages in /go/src directory
+
+To run Mongodb:
+	1. mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log --fork
+	2. mongo
+	
+Course for local administration of MongoDB - M103 course
+
+What does a document in MongoDB?
+	-> A document is a collection of "Field, Value" pairs
+	
+What are collections in MongoDB?
+	-> Collections are an organized group/collection of documents of similar types
+	-> Usually collections will have common fields between them
+	
+What does a DB in MongoDB contain?
+	-> DB in MongoDB is a group of collections
+	
+Why bson was introduced?
+	-> JSON is the supported format of MongoDB
+	-> JSON doesn't support all datatypes
+	-> To overcome this ddrawback, bson was introduced
+	-> It has been extended to include non-JSON native datatypes
+	
+Difference between json and bson,
+	-> https://www.mongodb.com/json-and-bson
+	
+Import and export data in MongoDB
+	EXPORT
+		-> mongodump : dumps data in bson format
+		-> mongoexport : exports data in json format
+		
+	IMPORT
+		-> mongorestore (bson)
+		-> mongoimport (json)
+		
+Commands for Imports and Exports:
+---------------------------------
+mongodump --uri "mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies"
+
+mongoexport --uri="mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies" --collection=sales --out=sales.json
+
+mongorestore --uri "mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies"  --drop dump
+
+mongoimport --uri="mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies" --drop sales.json
+
+MongoDB university query Answers:
+	-> https://scrapbox.io/akiko-memo/MongoDB_University_%2F_M001
+	
+Connecting to Mongo CLuster
+	-> https://docs.atlas.mongodb.com/command-line-tools/
+
+What is a namespace in mongoDB?
+-------------------------------
+	-> The concatenation of the database name and collection name is called a namespace
+	
+db.<coll>.find(<query>).count()
+	-> To find the count of the unique items
+	
+To achieve the ease of reading,
+	-> db.<coll>.find(<query>).pretty()
+	
+Command to find a random document in any collection
+	-> db.inspections.findOne(), where inspections is the collection name
+	
+Error for a duplicate key
+	-> duplicate key error collection
+	
+How to add a duplicate document in MongoDB?
+	-> By removing "_id" value in that document or by changing the "_id" value manually and inserting
+	
+How to insert multiple documents
+	-> db.collection.insert([{},{},{}]); wrap the documents inside [] to specify multiple values
+	
+The documents are inserted in the order they are specified in the array.
+	-> By using {"ordered":"false"}
+	
+Updating Documents:
+-------------------
+updateOne() : Even if multiple documents in the collection matches, only the first one will be updated
+updateOne() : It updates multiple documents
+
+Update Operators in MongoDB:
+----------------------------
+Increment Operator: $inc
+Decrement Operator: $dec
+
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Queries in MongoDB
+------------------
+Query to find a city with particular zipcode
+	-> "db.zips.find({"zip":"35014"}).pretty()"
+	
+A query using Increment Operator: "$inc"
+	-> db.zips.updateMany({"city":"HUDSON"},{"$inc": {"pop":10}})
+	
+	UpdateOne:
+		-> db.zips.updateOne({"city":"HUDSON"},{"$inc": {"pop":10}})
+		
+How to update a document value to a specific value
+	-> db.zips.updateOne({"city":"HUDSON"},{"$set": {"pop":3000}})
+
+	-> If the field to be updated is already not present, new field with that name will be created
+	
+Operator used to add an element to an array field?
+	-> Using push operator
+	-> {$push : {field1:value1, }}
+	
+	Example:
+		-> db.grades.updateOne({ "student_id": 250, "class_id": 339 },
+                    { "$push": { "scores": { "type": "extra credit",
+                                             "score": 100 }
+                                }
+                     })  
+                     
+        -> db.users.updateOne({"name":"Hariprathap"},{"$set":{"birth":[{"day":15,"month":12,"year":1989}]}})     
+        
+        -> Link for mongodb push : https://www.w3resource.com/mongodb/mongodb-array-update-operator-$push.php
+        -> Mongodb update commands : https://www.tutorialspoint.com/mongodb/mongodb_update_document.htm       
+       
+Commands used to delete documents:
+	-> deleteOne({"_id":value}) and deleteMany("_id":value)
+	
+To drop a collection:
+	-> db.<coll name>.drop()
+	
+Updating many documents based on particular filter,
+
+For example: In the sample_training.zips collection add a boolean field "capital?" to all documents pertaining to ALBANY NY, and NEW YORK, NY. 		-> The value of the field should be true for all ALBANY documents and false for all NEW YORK documents.
+		-> db.zips.updateMany({"city":"ALBANY","state":"NY"},{$set:{"capital":"true"}})
+		-> db.zips.updateMany({"city":"NEW YORK","state":"NY"},{$set:{"capital":"false"}})
+		
+UNSET Command:
+--------------
+	To unset any field
+		-> db.zips.updateMany({"city":"NEW YORK","state":"NY"},{$unset:{"capital":"false"}})
+		
+	Operations in update function
+		-> $set, $unset, $inc
+		
+Query Expression Operators:
+---------------------------
+	* db.trips.find({ "$expr": { "$eq": [ "$end station id", "$start station id"] }}).count()
+	* db.trips.find({ "$expr": { "$and": [ { "$gt": [ "$tripduration", 1200 ]},
+                         { "$eq": [ "$end station id", "$start station id" ]}
+                       ]}}).count()
+	
+	
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+		
+OPERATORS
+---------
+"$" sign in MongoDB
+-------------------
+	-> Used to read field values
+	-> Also used in aggregation pipelines
+	
+Comparison Operators:
+---------------------
+	$eq : equal to
+	$ne : not equal to
+	$lt : less than
+	$gt : greater than
+	$gte : greater than or equal to
+	$lte : less than or equal to
+	
+How to use : {<field> : {<operator>:<value>}}
+
+
+Using comparison operators:
+	-> query to find document whose user has a trip duration of greater than 300000 seconds
+		* db.trips.find({"tripduration":{"$gte":300000}}).pretty().count()
+		
+	-> query to find the people who are not subscribers
+		* db.trips.find({"usertype":{"$ne":"Subscriber"}})
+		
+Query using two conditions:
+	-> db.trips.find({"tripduration":{"$gte":250000},"usertype":{"$ne":"Subscriber"}}).pretty().count()
+		* The above query is to find the users who have a trip duration of greater than 250000 and who is also "not" a subscriber
+		
+
+How many documents in the sample_training.zips collection have fewer than 1000 people listed in the pop field?
+	-> db.zips.find({"pop":{"$lt":1000}}).count()
+	
+	
+What is the difference between the number of people born in 1998 and the number of people born after 1998 in the sample_training.trips collection?
+	-> db.trips.find({"birth year":{"$gt":1998}}).count()
+	-> db.trips.find({"birth year":{"$eq":1998}}).count()
+	
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+	
+Logic Operators
+---------------
+	$and $or $not $nor
+
+	$nor operator:
+	--------------
+		The below query is to find the results which is neither "No Violation Issued", "Violation Issues", "Pass", "Fail"
+			-> db.inspections.find({$nor:[{result:"No Violation Issued"},{result:"Violation Issued"},{result:"Pass"},{result:"Fail"}]}).pretty()
+		
+	$and operator:
+	--------------
+		* To select students whose "id" is greater than 25 and lesser than 100
+			-> db.grades.find({"$and":[{"student_id":{"$gt":25}},{"student_id":{"$lt":100}}]})
+			
+		* Instead of using "and" operator, the below is the "better" way
+			-> db.grades.find({"student_id":{"$gt":25,"$lt":100}}).pretty()
+			
+		* Then when to use "and" operator?
+			-> When we are going to use an operator more than once
+			-> Like "or operator" and "or operator"
+			
+	Working and operator:
+		* db.routes.find({"$and":[{"$or":[{"src_airport":"KZN"},{"dst_airport":"KZN"}]},{"$or":[{"airplane":"CR2"},{"airplane":"A81"}]} ] } )		
+		
+Updating many dcouments example again:
+	-> db.zips.updateMany({ "city": "HUDSON" }, { "$inc": { "pop": -10 } })
+		
+Questions and Queries:
+----------------------
+	* How many businesses in the sample_training.inspections dataset have the inspection result "Out of Business" and belong to the "Home Improvement Contractor - 100" sector?
+		-> db.inspections.find({"$and":[{"result":"Out of Business"},{"sector":"Home Improvement Contractor - 100"}]}).count()
+		
+	*In this case, we consider population of more than 1,000,000 to be over- populated and less than 5,000 to be under-populated
+		-> db.zips.find({"$and":[{"pop":{"$gte":5000}},{"pop":{"$lte":1000000}}]}).count()
+		
+	* Difficult Question:
+		Q: How many companies in the sample_training.companies dataset were either founded in 2004, or in the month of October and either have the social category_code or web category_code?
+		
+		db.companies.find({"$or":[{"$and":[{"founded_year":{"$eq":2004}},{"$or":[{"category_code":"web"},{"category_code":"social"}]}]},{"$and":[{"founded_month":{"$eq":10}},{"$or":[{"category_code":"web"},{"category_code":"social"}]}]}]}).count()
+		
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+		
+$expr : allows the use of aggregation expressions within the query language
+	-> Allows us to use variables and conditional statements
+	
+	-> "$" denotes the use of an operator and when we need to find value of a field
+	
+Q. Find the documents where the user has same start station and end station
+	-> db.trips.find({"$expr":{"$eq":["$start station id","$end station id"]}})
+	
+Q. Add the people who have trip duration of more than 1200 with the above query,
+	-> db.trips.find({"$expr":{"$and":[{"$gt":["$tripduration",1200]},{"$eq":["$start station id","$end station id"]}]}}).pretty()
+		* notice how the "$gt" symbol used with "$expr"
+		
+	***************** MQL Syntax : {<field> : {<operator>:<value>}} ********************
+	***************** AGGREGATION Syntax : {<operator> : {<field>,<value>}} ********************	
+	
+Remember not to use the below query
+	-> db.companies.find({ "number_of_employees": { "$gt":  "$founded_year" } } )
+		Reason: https://university.mongodb.com/mercury/M001/2021_June_29/chapter/Chapter_4_Advanced_CRUD_Operations/lesson/5f36fdd804e9ffaad3c5973a/answer
+		
+How many companies in the sample_training.companies collection have the same permalink as their twitter_username?
+	-> db.companies.find({"$expr":{"$eq":["$permalink","$twitter_username"]}})
+	
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$	
+		
+Array Operators:
+----------------
+$push
+	-> While querying array, don't use square bracket while searching single element
+	-> Use $all with square bracket if you want to search more elements
+
+	-> How to return a result where an array contains exactly 20 fields?
+		use "$size" : 20	
+		
+Q. Using the sample_airbnb.listingsAndReviews collection find out how many documents have the "property_type" "House", and include "Changing table" as one of the "amenities"?
+	Ans: db.listingsAndReviews.find({"property_type":"House","amenities":"Changing table"}).count()
+	
+Q.Which will return all listings that have "Free parking on premises", "Air conditioning", and "Wifi" as part of their amenities, and have at least 2 bedrooms in the sample_airbnb.listingsAndReviews collection?
+	Ans: db.listingsAndReviews.find({ "amenities": { "$all": [ "Free parking on premises", "Wifi", "Air conditioning" ] }, "bedrooms": { "$gte":  2 } } ).pretty()
+		
+Projections:
+------------
+	-> To choose which document fields will be part of our result 
+	
+	Q. In the listingsAndReviews database, display only the documents "screen and address" along with other filters using projection,
+		-> db.listingsAndReviews.find({"amenities":{"$size":20, "$all":["Internet","Wifi","Kitchen","Heating"]}},{"price":1,"address":1}).pretty()
+		-> In the above query, result only projects "price" and "address"
+		-> price:1; here, 1 is configured to display the fields which we want to see; 0 to not display the fields
+		-> Can't use both "1" and "0" in the same query
+			* Exception: only if we want to not display the "_id" field, we can use "_id":0 along with "price":1
+			
+Advanced Projections:
+---------------------
+	* Operator "elemMatch"
+		-> db.grades.find({ "class_id": 431 },{ "scores": { "$elemMatch": { "score": { "$gt": 85 } } }}).pretty()
+		-> "elemMatch" matches only that particular field present in the array
+		
+db.grades.find({ "class_id": 431 },
+               { "scores": { "$elemMatch": { "score": { "$gt": 85 } } }
+             }).pretty()
+		
+Q. How many companies in the sample_training.companies collection have offices in the city of Seattle?		
+	Ans : db.companies.find({"offices":{"$elemMatch":{"city":{"$eq":"Seattle"}}}}).count() (or)
+		db.companies.find({ offices: { "$elemMatch": { city: "Seattle" } } }).count()
+	
+		$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+		
+MongoDB Aggregation
+-------------------
+	* https://docs.mongodb.com/manual/reference/operator/aggregation/subtract/#:~:text=%24subtract%20(aggregation)%C2%B6&text=Subtracts%20two%20numbers%20to%20return,to%20return%20the%20resulting%20date.&text=The%20arguments%20can%20be%20any,to%20numbers%20and%2For%20dates.
+	
+	
+	* db.trips.aggregate({"$subtract":[{"birth year":{"$eq":1998}},{"birth year":{"$gt":1998}}]})
+	
+		############################################################################################################
+		
+Querying Arrays and SubDocuments:
+	* Using "." notation
+	
+	Example Query:
+		* db.companies.findOne({"relationships.0.person.last_name":"Zuckerberg"},{"name":1,"_id":0})
+		* db.companies.findOne({"relationships.person.last_name":"Zuckerberg"},{"name":1,"_id":0})
+		
+		* db.companies.find({"relationships.0.person.first_name":"Mark","relationships.0.title":{"$regex":"CEO"}},{"name":1,"_id":0}).count()
+		
+Question:
+---------
+	Q. How many trips in the sample_training.trips collection started at stations that are to the west of the -74 longitude coordinate?
+		Ans: db.trips.find({"start station location.coordinates":{"$lt":-74}}).count()
+		
+	Q. How many inspections from the sample_training.inspections collection were conducted in the city of NEW YORK?
+		Ans: db.inspections.find({"address.city":"NEW YORK"}).count()
+		
+	Q. Which of the following queries will return the names and addresses of all listings from the sample_airbnb.listingsAndReviews collection where the first amenity in the list is "Internet"?
+		Ans: db.listingsAndReviews.find({"amenities.0":"Internet"},{"name":1,"address":1,"amenities.0":1}).pretty()
+		
+Quiz:
+-----
+	Q. 1. How many documents in the sample_training.zips collection have fewer than 1000 people listed in the pop field?	
+		Ans: db.zips.find({"pop":{"$lt":1000}}).count()
+		
+	Q. 2. How many businesses in the sample_training.inspections dataset have the inspection result "Out of Business" and belong to the Home Improvement Contractor - 100 sector?
+		Ans: db.inspections.find({"$and":[{"result":{"$eq":"Out of Business"}},{"sector":{"$eq":"Home Improvement Contractor - 100"}}]}).count()
+
+	Q. 3. How many zips in the sample_training.zips dataset are neither over- populated nor under-populated?
+		Ans: db.zips.find({"$and":[{"pop":{"$gte":5000}},{"pop":{"$lte":1000000}}]}).count() (or)
+			db.zips.find({pop:{$lt:1000000,$gt:5000}}).count()
+			
+	
+	Q. How many companies in the sample_training.companies dataset were either founded in 2004, or in the month of October and either have the social category_code or web category_code?
+		Ans: db.companies.find({"$and":[{"$or":[{"founded_year":2005},{"founded_month":10}]},{"$or":[{"category_code":"web"},{"category_code":"social"}]}]}).count()
+		
+	Q. How many companies in the sample_training.companies collection have the same permalink as their twitter_username?
+		Ans: First project only permalink and twitter_username using the below query,
+			-> db.companies.find({"category_code":"web"},{"permalink":1,"twitter_username":1})
+			
+		Ans: db.companies.find({"$expr":{"$eq":["$permalink","$twitter_username"]}},{"permalink":1,"twitter_username":1}).count()
+		
+
+	Q. How many companies in the sample_training.companies collection have offices in the city of Seattle?
+		Ans: db.companies.find({"offices.city":"Seattle"},{"offices":1}).count()
+		
+	Q. How many trips in the sample_training.trips collection started at stations that are to the west of the -74 latitude coordinate?
+		Ans: db.trips.find({"start station location.coordinates.0":{"$lt":-74}}).count()
+		
+		
+	Q. How many inspections from the sample_training.inspections collection were conducted in the city of New York?
+		Ans: db.inspections.find({"address.city":"NEW YORK"}).count()
+		
+	######################################################################################################################
+	
+Aggregation:
+	Q. What room types are present in the sample_airbnb.listingsAndReviews collection?
+		Ans: db.listingsAndReviews.aggregate([ { "$group": { "_id": "$room_type" } }])
+		
+		
+Sort and Limit:
+	* Sort sorts the result based on a field in ascending order
+	* Limit displays only limited number of results
+	
+	* db.zips.find().sort({"pop":1}).limit(1).count()
+		* sort by population in ascending order
+		* To sort i descending order, use pop: -1
+		
+	* db.zips.find().sort({"pop":-1}).limit(1).pretty()
+		
+	Sort and limit are cursor functions which means they are applied on the results of find command
+	
+	Q. Can we use sort for two fields? Yes
+		* db.zips.find().sort({"pop":1,"city":-1}).limit(3).pretty()
+		
+	Q. Does the function names limit() and sort() have to be in same order in a query?	
+		* While the limit() and sort() methods are not listed in the correct order, MongoDB flips their order when executing the query, delivering the results that the question prompt is looking for
+		
+	Q. In what year was the youngest bike rider from the sample_training.trips collection born?
+		* db.trips.find({"birth year": { "$ne":"" }},{"birth year":1}).sort({"birth year":-1}).limit(1)
+		
+	Q. sort by date
+		* db.inspections.find({"date":{"$lt":"Feb 20 2015"}}).sort({"date":1}).limit(1).pretty()
+		
+	######################################################################################################################		
+		
+Indexing: [MongoDB performance Course]
+	Q. How to create an Index?
+		* Using "CreateIndex" function
+			-> db.trips.CreateIndex("birth year" : 1)
+			-> The above is a single field index
+			
+	Q. Compound Index:
+		* db.trips.createIndex({"birth year":1,"start station id": 1})
+		
+	######################################################################################################################
+	
+Data Modeling:
+	-> Data modeling - a way to organize fields in a document to support your application performance and querying capabilities
+	
+Complex Queries:
+----------------
+Upsert:
+	-> Makes update easier. If upsert: true is set, it first searches for a document, if it is found, then it updates that document
+		-> else it inserts the document	
+		
+MongoDB features:
+-----------------
+	-> Realm
+	
+	
+MongoDB target July 8:
+----------------------
+Array Operations
