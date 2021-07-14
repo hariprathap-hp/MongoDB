@@ -8,7 +8,6 @@ import (
 	"text/template"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -18,8 +17,12 @@ import (
 const (
 	// Name of the database.
 	DBName = "sample_training"
-	URI    = "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.9t09v.mongodb.net/sample_training?retryWrites=true&w=majority"
+	//URI    = "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.9t09v.mongodb.net/sample_training?retryWrites=true&w=majority"
 	//URI  = "mongodb://deadpoet:Achilles@localhost/july7db"
+
+	//The below is the URI to connect Mongo server running in another container
+	//The name "mongo-server" is the one declared in docker-compose file
+	URI  = "mongodb://mongo-server:27017"
 	COLL = "training_collection"
 )
 
@@ -51,7 +54,7 @@ func init() {
 
 func main() {
 	http.HandleFunc("/connectmongo/", connectHandler)
-	http.HandleFunc("/writemongo/", writeHandler)
+	//http.HandleFunc("/writemongo/", writeHandler)
 	http.HandleFunc("/", indexHandler)
 	log.Fatalln(http.ListenAndServe(":8000", nil))
 
@@ -85,7 +88,7 @@ func connectHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Database Successfully Connected")
 }
 
-func writeHandler(w http.ResponseWriter, r *http.Request) {
+/*func writeHandler(w http.ResponseWriter, r *http.Request) {
 	note := Note{}
 	connectHandler(w, r)
 	db := client.Database(DBName)
@@ -124,4 +127,4 @@ func writeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(n.CreatedAt.Clock())
 	fmt.Fprintln(w, n.Body)
 	fmt.Fprintln(w, n.Title)
-}
+} */

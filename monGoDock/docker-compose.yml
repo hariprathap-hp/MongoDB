@@ -1,0 +1,12 @@
+version: '3'
+services:
+    mongo-server:
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+    mongo-app:
+        build: .
+        ports:
+            - "1111:8000"

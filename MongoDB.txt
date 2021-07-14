@@ -447,6 +447,10 @@ Indexing: [MongoDB performance Course]
 Data Modeling:
 	-> Data modeling - a way to organize fields in a document to support your application performance and querying capabilities
 	
+regex: 
+	
+	######################################################################################################################
+	
 Complex Queries:
 ----------------
 Upsert:
@@ -458,6 +462,6 @@ MongoDB features:
 	-> Realm
 	
 	
-MongoDB target July 8:
-----------------------
-Array Operations
+MongoDB target July 13:
+-----------------------
+regex and elemmatch
