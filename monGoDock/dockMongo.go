@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -65,11 +66,16 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func connectHandler(w http.ResponseWriter, r *http.Request) {
-	ctx = context.Background()
+	//ctx = context.Background()
 	clientOptions = options.Client().ApplyURI(URI)
 
 	// Connect to MongoDB
 	var err error
+
+	//you can also use the below method to connect
+	/*ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()*/
+
 	client, err = mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
@@ -86,6 +92,12 @@ func connectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, "Database Successfully Connected")
+	dbs, _ := client.ListDatabases(context.TODO(), bson.M{})
+	fmt.Println(dbs)
+	fmt.Fprintln(w, dbs)
+
+	colls, _ := client.Database("users").ListCollectionNames(context.TODO(), bson.M{})
+	fmt.Fprintln(w, colls)
 }
 
 /*func writeHandler(w http.ResponseWriter, r *http.Request) {

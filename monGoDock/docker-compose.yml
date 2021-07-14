@@ -3,9 +3,11 @@ services:
     mongo-server:
         image: mongo
         restart: always
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: example
+
+    #If the below 3 lines are commented, then the access to database is unrestricted and anyone can insert,delete documents from mongodb
+        #environment:
+        #    MONGO_INITDB_ROOT_USERNAME: root
+        #    MONGO_INITDB_ROOT_PASSWORD: example
     mongo-app:
         build: .
         ports:
