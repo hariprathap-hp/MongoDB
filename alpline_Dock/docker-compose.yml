@@ -1,0 +1,16 @@
+version: '3'
+services:
+    mongo-server:
+        image: mongo
+        restart: always
+
+    #If the below 3 lines are commented, then the access to database is unrestricted and anyone can insert,delete documents from mongodb
+        #environment:
+        #    MONGO_INITDB_ROOT_USERNAME: root
+        #    MONGO_INITDB_ROOT_PASSWORD: example
+    mongo-app:
+        //if the app crashes, automatically restart it
+        restart: always
+        build: .
+        ports:
+            - "1110:8000"
