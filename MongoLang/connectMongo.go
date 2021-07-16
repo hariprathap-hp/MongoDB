@@ -8,9 +8,10 @@ import (
 	"text/template"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2/bson"
+	//	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -49,6 +50,23 @@ func findOne(w http.ResponseWriter, r *http.Request) {
 		//fmt.Println("Collection type:", reflect.ValueOf(coll))
 		//var movie fields.Movie
 
+		//Passing query with a filter
+		opts := options.Find()
+
+		cursor, err := coll.Find(context.TODO(), bson.D{{"$and", []interface{}{bson.D{{"year", bson.D{{"$gt", 2000}}}, {"year", bson.D{{"$lt", 2002}}}}}}}, opts)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var movie bson.M
+		defer cursor.Close(context.TODO())
+		for cursor.Next(context.TODO()) {
+			if err = cursor.Decode(&movie); err != nil {
+				log.Fatal(err)
+			}
+			fmt.Fprint(w, movie)
+		}
+
 		//The below commented are to fetch results using Find
 		/*cursor, err := coll.Find(context.TODO(), bson.M{})
 		if err != nil {
@@ -64,11 +82,14 @@ func findOne(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(movie)
 		}*/
 
-		var movie bson.M
-		if err := coll.FindOne(context.TODO(), bson.M{}).Decode(&movie); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Fprint(w, movie)
+		//To find just one record
+		/*
+			var movie bson.M
+			if err := coll.FindOne(context.TODO(), bson.M{}).Decode(&movie); err != nil {
+				log.Fatal(err)
+			}
+			fmt.Fprint(w, movie)
+		*/
 	}
 }
 
@@ -93,7 +114,6 @@ func connectHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Connection to DB Failed")
 		//fmt.Fprintln(w, "Connect to DB Failed", dbConnerr)
 	}
-
 	// Check the connection
 	err := client.Ping(context.TODO(), nil)
 
