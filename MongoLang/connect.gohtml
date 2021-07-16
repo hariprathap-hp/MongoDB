@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <h1> Listing the databases available </h1>
+</head>
+</body>
+    {{range .}}
+        {{.}}
+        <br>
+    {{end}}
+    <br>
+
+    <form action="/showCollections" method="POST">
+        <label for="dbname">Database Name: </label>
+        <input type="text"  id="dbname" name="dbname">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

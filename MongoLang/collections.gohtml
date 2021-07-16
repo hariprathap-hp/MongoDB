@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <h1>Displaying the list of collections</h1>
+</head>
+
+<body>
+    {{range .}}
+        {{.}}
+        <br>
+    {{end}}
+
+    <form action="/findOne" method="POST">
+        <label for="collName">Collection Name: </label>
+        <input type="text" name="collName" id="collName">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

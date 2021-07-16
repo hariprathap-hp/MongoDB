@@ -461,6 +461,22 @@ MongoDB features:
 -----------------
 	-> Realm
 	
+	######################################################################################################################
+	
+Mongo and Golang Link: Querying Mongo from goLang
+	-> How to query MongoDB from goLang?
+		-> https://kb.objectrocket.com/mongo-db/how-to-get-mongodb-documents-using-golang-446
+		
+	-> Working and Official
+		-> https://www.mongodb.com/blog/post/quick-start-golang--mongodb--how-to-read-documents
+	
+What is the difference between bson.M and bson.D?
+	-> https://stackoverflow.com/questions/64281675/bson-d-vs-bson-m-for-find-queries
+	
+Errors and solutions:
+---------------------
+	-> cannot transform type bson.D to a BSON Document: WriteArray can only write a Array while positioned on a Element or Value but is positioned on a TopLevel
+		-> This error occurred while trying to find one document from MongoDB
 	
 MongoDB target July 13:
 -----------------------
